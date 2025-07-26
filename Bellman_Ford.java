@@ -1,5 +1,3 @@
-import java.util.ArrayDeque;
-import java.util.Queue;
 
 public class Bellman_Ford extends Graph {
     Path solutionPath; 
@@ -17,6 +15,8 @@ public class Bellman_Ford extends Graph {
             chemin[i] = 0;
             distance[i] = Float.MAX_VALUE;
         }
+        chemin[0] = - 1;
+        distance[0] = 0.0f;
         this.solutionPath.path = chemin;
         this.solutionPath.cost = distance;
     }
@@ -29,13 +29,14 @@ public class Bellman_Ford extends Graph {
             for (int j = 0; j < this.NbVertices; j++) {
                 neighbourValue = this.AdjacencyMatrix[i][j];
                 if (neighbourValue > 0 || neighbourValue < 0) {
-                    if (neighbourValue + this.solutionPath.cost[i] < this.solutionPath.cost[j]) {
+                    if (this.solutionPath.cost[j] > neighbourValue + this.solutionPath.cost[i]) {
                         this.solutionPath.cost[j] =  neighbourValue + this.solutionPath.cost[i];
                         this.solutionPath.path[j] = i;
                     }
                 }
             }
         }
+        this.isnegativeCycle();
 
     }
 
@@ -46,25 +47,37 @@ public class Bellman_Ford extends Graph {
                neighbourValue = this.AdjacencyMatrix[i][j];
                 if (neighbourValue > 0 || neighbourValue < 0) {
                     if (neighbourValue + this.solutionPath.cost[i] < this.solutionPath.cost[j]) {
-                        if(this.path.)
+                        if(this.solutionPath.visited[i] == false){
+                            this.solutionPath.visited[i] = true;
+                        }else {
+                        
+                            System.out.println("Le graphe contient un cycle négatif");
+                            this.solutionPath.isnegativeCycle = true;
+                            return;
               
                     }
                 }
             }
         }
             }
+                    System.out.println("Le graphe ne contient pas de cycle négatif");
+
         }
-        System.out.println("Le graphe ne contient pas de cycle négatif");
-    }
+    
 
     public void displayPath() {
         System.out.println("Le graph est: ");
         displayGraph();
-        System.out.println("La solution est: ");
+        System.out.println("Le chemin est: ");
 
         for (int i = 0; i < this.NbVertices; i++) {
             System.out.println(this.solutionPath.path[i]);
 
+        }if (this.solutionPath.isnegativeCycle) {
+            System.out.println("Le graphe contient un cycle négatif");
+        } else {
+            System.out.println("Le graphe ne contient pas de cycle négatif");
         }
+       
     }
 }
